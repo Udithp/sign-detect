@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+
+# dataset
+AtoZ_3.1/
+
+# logs
+*.log
+
+# model files (optional)
+# *.h5
+
+# IDE
+.idea/

@@ -1,0 +1,8 @@
+Flask==3.0.3
+Flask-Cors==4.0.1
+numpy==1.26.4
+opencv-python-headless==4.9.0.80
+tensorflow-cpu==2.15.0
+deep-translator==1.11.4
+gTTS==2.5.1
+gunicorn==22.0.0

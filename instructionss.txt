@@ -1,0 +1,59 @@
+# 🛠️ Sign Language AI Interpreter - Setup Guide
+
+This project consists of two parts: a Python AI Backend and a React Web Frontend. Follow these steps to get it running:
+
+---
+
+## 1. Prerequisites
+Make sure you have the following installed:
+- Python 3.9+
+- Node.js (Latest LTS version)
+
+---
+
+## 2. Step 1: Set up the AI Backend (Python)
+Open a terminal in the main project folder and run:
+
+1. Create a Virtual Environment:
+   python -m venv venv
+
+2. Activate it:
+   - Windows: venv\Scripts\activate
+   - Mac/Linux: source venv/bin/activate
+
+3. Install Dependencies:
+   pip install -r requirements.txt
+
+4. Start the API Server:
+   python api_server.py
+
+(Keep this terminal open! The server runs on http://localhost:5000)
+
+---
+
+## 3. Step 2: Set up the Web App (Node.js)
+Open a NEW terminal and go into the web-app folder:
+
+1. Go to folder:
+   cd web-app
+
+2. Install Dependencies:
+   npm install
+
+3. Start the Development Server:
+   npm run dev
+
+---
+
+## 4. Step 3: Launch the App
+1. Once the web server starts, it will give you a link (usually http://localhost:5173).
+2. Open that link in Google Chrome (recommended).
+3. Allow Camera Permissions.
+4. Position your hand in front of the camera, and the AI will begin translating your signs into text in real-time!
+
+---
+
+## 💡 Troubleshooting
+- Camera not loading? Make sure no other apps (like Zoom or Teams) are using your camera.
+- Backend Error? Ensure you are running api_server.py in the activated virtual environment.
+- Accuracy? For the best results, use a plain background and ensure your hand is well-lit.
