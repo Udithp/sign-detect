@@ -462,7 +462,7 @@ const InterpreterCard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-          <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-slate-900 aspect-video">
+          <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-slate-900 aspect-[4/3]">
             <div className="absolute top-6 left-6 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full text-xs font-bold border border-white/10">
               <Camera size={14} className="text-cyan-400" />
               <span className="tracking-widest">LIVE CAMERA</span>
@@ -484,7 +484,7 @@ const InterpreterCard = () => {
             <video ref={videoRef} className="w-full h-full object-contain transform scale-x-[-1]" playsInline autoPlay muted />
           </div>
 
-          <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#020617] aspect-video">
+          <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#020617] aspect-[4/3]">
             <div className="absolute top-6 left-6 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full text-xs font-bold border border-white/10">
               <Zap size={14} className="text-yellow-400" />
               <span className="text-yellow-400 tracking-widest">SKELETON MAPPING</span>
