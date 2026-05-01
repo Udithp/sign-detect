@@ -241,6 +241,10 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/hands_solution_packed_assets.data')
+def serve_mediapipe_data():
+    return send_from_directory(os.path.join(app.static_folder, 'mediapipe-hands'), 'hands_solution_packed_assets.data')
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
