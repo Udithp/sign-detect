@@ -38,6 +38,7 @@ const InterpreterCard = () => {
   const [translatedText, setTranslatedText] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
 
   const isPredicting = useRef(false);
   const stableStartTime = useRef(null);
@@ -114,6 +115,42 @@ const InterpreterCard = () => {
       setTimeout(() => setJustAdded(false), 300);
     }
   }, [currentPrediction, outputSentence, stagedLetter, holdProgress]);
+
+  // Fetch autocomplete suggestions whenever the current word changes
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      const words = outputSentence.split(' ');
+      const currentWord = (words[words.length - 1] + stagedLetter).trim();
+      
+      if (!currentWord || currentWord.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocomplete?prefix=${currentWord}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data);
+        }
+      } catch (err) {
+        console.error('Autocomplete error:', err);
+      }
+    };
+    
+    // Debounce to avoid spamming the backend
+    const timeout = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timeout);
+  }, [outputSentence, stagedLetter]);
+
+  const handleSuggestionClick = (word) => {
+    const words = outputSentence.split(' ');
+    words.pop(); // remove the partial word being typed
+    const newSentence = (words.length > 0 ? words.join(' ') + ' ' : '') + word + ' ';
+    setOutputSentence(newSentence);
+    setStagedLetter('');
+    setSuggestions([]);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -444,7 +481,7 @@ const InterpreterCard = () => {
                 <p className="text-slate-400 text-xs max-w-xs">{loadError}</p>
               </div>
             )}
-            <video ref={videoRef} className="w-full h-full object-cover transform scale-x-[-1]" playsInline autoPlay muted />
+            <video ref={videoRef} className="w-full h-full object-contain transform scale-x-[-1]" playsInline autoPlay muted />
           </div>
 
           <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#020617] aspect-video">
@@ -452,7 +489,7 @@ const InterpreterCard = () => {
               <Zap size={14} className="text-yellow-400" />
               <span className="text-yellow-400 tracking-widest">SKELETON MAPPING</span>
             </div>
-            <canvas ref={canvasRef} width={640} height={480} className="w-full h-full object-cover" />
+            <canvas ref={canvasRef} width={640} height={480} className="w-full h-full object-contain" />
             <AnimatePresence mode="wait">
               {currentPrediction && (
                 <motion.div
@@ -539,6 +576,28 @@ const InterpreterCard = () => {
                 transition={{ duration: 1, repeat: Infinity }}
               />
             </div>
+
+            {/* Suggestions Bar */}
+            <AnimatePresence>
+              {suggestions.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="w-full flex flex-wrap justify-center gap-2 mt-6 border-t border-white/5 pt-4"
+                >
+                  {suggestions.map((word, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSuggestionClick(word)}
+                      className="px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-sm font-bold tracking-widest hover:bg-cyan-500/20 transition-all shadow-[0_0_10px_rgba(6,182,212,0.1)]"
+                    >
+                      {word}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Translated Text Display */}
             {selectedLang !== 'en' && translatedText && (
