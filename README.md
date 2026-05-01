@@ -179,6 +179,15 @@ We collected over 180 images per alphabet (A-Z) in diverse lighting conditions. 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <div align="center">
-  <p>Built with ❤️ by the SignBridge Team</p>
+  <h3>Built with ❤️ by the SignBridge Team</h3>
+  <p>
+    <a href="https://github.com/Udithp">
+      <img src="https://img.shields.io/badge/Udithp-Profile-blue?style=flat-square&logo=github" alt="Udithp GitHub">
+    </a>
+    &nbsp;&nbsp;
+    <a href="https://github.com/rabhay10">
+      <img src="https://img.shields.io/badge/rabhay10-Profile-lightgrey?style=flat-square&logo=github" alt="rabhay10 GitHub">
+    </a>
+  </p>
   <p>© 2026 SignBridge. All rights reserved.</p>
 </div>
