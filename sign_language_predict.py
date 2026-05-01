@@ -6,7 +6,7 @@ def distance(x, y):
     return math.sqrt(((x[0] - y[0]) ** 2) + ((x[1] - y[1]) ** 2))
 
 
-def predict_single(pts, white, model, return_confidence=False, raw_pts=None):
+def predict_single(pts, white, model, return_confidence=False, raw_pts=None, input_details=None, output_details=None):
     """
     pts = flipped coords (for CNN image)
     raw_pts = unflipped coords (for heuristics). If None, uses pts.
@@ -14,9 +14,13 @@ def predict_single(pts, white, model, return_confidence=False, raw_pts=None):
     # Use raw_pts for heuristics if provided, else fall back to pts
     h = raw_pts if raw_pts is not None else pts
 
-    white_flat = np.array(white, dtype=np.uint8)
+    white_flat = np.array(white, dtype=np.float32)
     white_flat = white_flat.reshape(1, 400, 400, 3)
-    prob = model(white_flat, training=False).numpy()[0]
+    
+    model.set_tensor(input_details[0]['index'], white_flat)
+    model.invoke()
+    prob = model.get_tensor(output_details[0]['index'])[0]
+    
     ch1_idx = int(np.argmax(prob, axis=0))
     confidence = float(prob[ch1_idx])
     ch1 = ch1_idx

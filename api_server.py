@@ -15,9 +15,12 @@ import io
 app = Flask(__name__, static_folder='web-app/dist', static_url_path='/')
 CORS(app)
 
-MODEL_H5 = 'cnn8grps_rad1_model.h5'
-keras_model = tf.keras.models.load_model(MODEL_H5)
-print("[API] Keras model ready.")
+MODEL_TFLITE = 'model.tflite'
+interpreter = tf.lite.Interpreter(model_path=MODEL_TFLITE)
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+print("[API] TFLite model ready.")
 
 # Load Wordlist
 word_list = []
@@ -91,7 +94,7 @@ def predict_from_landmarks(raw_pts):
     for i in range(21):
         cv2.circle(white, (pts_crop[i][0]+os_x, pts_crop[i][1]+os_y), 2, (0,0,255), 1)
 
-    result, confidence = predict_single(pts_crop, white, keras_model, return_confidence=True)
+    result, confidence = predict_single(pts_crop, white, interpreter, input_details=input_details, output_details=output_details, return_confidence=True)
     return result, round(confidence * 100, 1)
 
 
