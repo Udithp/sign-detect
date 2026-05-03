@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { X, Hand, Loader2, Camera, Check, ChevronLeft, ChevronRight, Lightbulb, Ruler, Timer } from 'lucide-react';
+import { X, Hand, Loader2, Camera, Check, ChevronLeft, ChevronRight, Lightbulb, Ruler, Timer, Zap, Volume2 } from 'lucide-react';
 
 const WRIST = [
   { wrist:'#f43f5e', bg:'rgba(244,63,94,0.13)',  border:'rgba(244,63,94,0.4)',  glow:'rgba(244,63,94,0.3)',  text:'#fb7185' },
@@ -39,6 +39,9 @@ const LETTERS = [
   { letter:'X', tip:'Index finger hooked like a hook' },
   { letter:'Y', tip:'Thumb & pinky out (hang loose)' },
   { letter:'Z', tip:'Index finger traces a Z in the air', motion:true },
+  { letter:'Backspace', tip:'Point your hand to the left with palm open to delete the last character', special: true, img: '/backspace-gesture.png' },
+  { letter:'next', tip:'Confirm the character/word by tucking your thumb into a fist', special: true, img: '/next-gesture.png' },
+  { letter:'Speak', tip:'Give a clear thumbs-up gesture to hear the translation aloud', special: true, img: '/speak-gesture.png' },
 ];
 
 function loadScript(src) {
@@ -204,6 +207,47 @@ export default function LearnPage() {
           </div>
         </motion.div>
 
+        {/* ── FUNCTIONAL GESTURES CHART ── */}
+        <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2 }}
+          className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
+              <Zap size={20} className="text-amber-400" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white uppercase tracking-tight">Functional Gestures</h2>
+              <p className="text-xs text-slate-500">Essential controls for the interpreter system</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              { name:'Backspace', img:'/backspace-gesture.png', desc:'Wave palm left to delete last char' },
+              { name:'Next / Confirm', img:'/next-gesture.png', desc:'Open hand to confirm and add space' },
+              { name:'Speak Gesture', img:'/speak-gesture.png', desc:'Thumbs up to hear sentence' },
+            ].map((f, i) => (
+              <div key={f.name} className="glass-panel rounded-3xl p-5 flex flex-col items-center gap-5 border border-white/[0.04] hover:border-cyan-500/30 transition-all group">
+                <div className="w-full aspect-[4/3] bg-white rounded-2xl overflow-hidden flex items-center justify-center p-6 relative">
+                  {f.img ? (
+                    <img src={f.img} alt={f.name} className="max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3">
+                      <f.icon size={56} className="text-cyan-500" />
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Icon View</span>
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3 px-2 py-1 rounded-md bg-slate-950 text-[8px] font-bold text-slate-400 border border-white/10 uppercase tracking-tighter">
+                    {f.img ? 'Illustration' : 'System Action'}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <h3 className="font-bold text-white text-lg group-hover:text-cyan-400 transition-colors">{f.name}</h3>
+                  <p className="text-xs text-slate-400 mt-1">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
         {/* ── PRACTICE SECTION HEADER ── */}
         <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.3 }} className="text-center mb-6">
           <h2 className="text-2xl font-bold text-white mb-1">Practice Each Sign</h2>
@@ -227,7 +271,13 @@ export default function LearnPage() {
                   color: isSel ? a.text : '#94a3b8',
                   boxShadow: isSel ? `0 0 20px ${a.glow}` : 'none',
                 }}>
-                {sign.letter}
+                {sign.special ? (
+                  <span className="text-[9px] font-bold leading-tight uppercase text-center px-1">
+                    {sign.letter === 'next' ? 'NEXT' : sign.letter}
+                  </span>
+                ) : (
+                  sign.letter
+                )}
                 {sign.motion && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[6px] font-bold"
                     style={{ background:'#6366f1', color:'#fff' }}>▶</span>
@@ -262,9 +312,15 @@ export default function LearnPage() {
                 <div className="p-8 flex flex-col justify-between" style={{ borderRight:`1px solid ${acc.border}` }}>
                   <div>
                     <span className="text-xs font-bold tracking-[0.25em] uppercase" style={{ color:acc.text }}>How to sign</span>
-                    <div className="text-[7rem] font-black leading-none my-2 select-none"
-                      style={{ color:acc.text, textShadow:`0 0 60px ${acc.glow}` }}>
-                      {selected.letter}
+                    <div className="text-[7rem] font-black leading-none my-2 select-none flex items-center justify-center"
+                      style={{ color:acc.text, textShadow:`0 0 60px ${acc.glow}`, minHeight: '140px' }}>
+                      {selected.img ? (
+                        <div className="bg-white p-4 rounded-2xl border-4 border-current shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+                          <img src={selected.img} alt={selected.letter} className="h-40 w-auto object-contain" />
+                        </div>
+                      ) : (
+                        selected.letter === 'Backspace' ? '⌫' : selected.letter === 'next' ? '⏩' : selected.letter === 'Speak' ? '🔊' : selected.letter
+                      )}
                     </div>
                     <p className="text-lg font-semibold text-white mb-3">{selected.tip}</p>
                     {selected.motion && (
