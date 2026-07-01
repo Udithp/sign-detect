@@ -531,6 +531,15 @@ def predict_single(pts, white, model, return_confidence=False, raw_pts=None, inp
     if not isinstance(ch1, str):
         ch1 = ""
 
+    # HELLO gesture: thumb + index + pinky UP, middle + ring DOWN (ILY hand sign)
+    if (
+        h[4][1] < h[3][1]          # thumb tip above thumb knuckle
+        and h[8][1] < h[6][1]      # index finger up
+        and h[12][1] > h[10][1]    # middle finger curled
+        and h[16][1] > h[14][1]    # ring finger curled
+        and h[20][1] < h[18][1]    # pinky up
+    ):
+        ch1 = "HELLO"
     if return_confidence:
         return ch1, confidence
     return ch1
